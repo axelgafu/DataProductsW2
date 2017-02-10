@@ -1,0 +1,58 @@
+---
+title: "Data Products - Week 2"
+author: "Axel Garcia"
+date: "February 9th, 2017"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+library(leaflet)
+knitr::opts_chunk$set(echo = FALSE)
+
+white_flag_icon <- makeIcon(
+    iconUrl = "http://www.msmindbody.com/wp-content/uploads/2014/04/whiteflag1.jpg",
+    iconWidth = 31*215/230, iconHeight = 31,
+    iconAnchorX = 31*215/230/2, iconAnchorY = 16
+)
+
+wally_icon <- makeIcon(
+    iconUrl = "http://2.bp.blogspot.com/_Rj_i1hn_ZoY/TTbwaA3NtaI/AAAAAAAAMaI/gZ9c94LOi5U/s1600/donde%2Besta%2Bwally.jpg",
+    iconWidth = 31*215/130, iconHeight = 31,
+    iconAnchorX = 31*215/130/2, iconAnchorY = 16
+)
+
+# https://rstudio.github.io/leaflet/markers.html
+icons <- iconList( white=white_flag_icon, wally=wally_icon)
+
+MAX_MARKS <- 15
+```
+
+
+## Find Wally!
+```{r clusters_map, echo = FALSE}
+  
+  wally_location <- c(lat=runif(1, min=39.2, max=39.3),
+                      lng=runif(1, min=-76.6, max=-76.5))
+
+  df <- data.frame(lat=runif(MAX_MARKS, min=39.2, max=39.3),
+                   lng=runif(MAX_MARKS, min=-76.6, max=-76.5))
+
+  icon_spec <- rep("white", MAX_MARKS+1)
+  icon_spec[MAX_MARKS+1] <- "wally"
+  popup_spec <- rep("Nope, keep looking for Wally! ^_^", MAX_MARKS+1)
+  popup_spec[MAX_MARKS+1] <- "Good job, You found Wally!! :-D"
+
+  df %>% 
+    rbind(wally_location) %>%
+    leaflet() %>% 
+    addTiles() %>%
+    addMarkers(
+        clusterOptions=markerClusterOptions(), 
+        icon=icons[factor(icon_spec)],
+        popup=popup_spec)
+```
+
+
+## To Learn More
+
+This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
